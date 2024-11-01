@@ -69,7 +69,7 @@ crate-type = ["lib", "cdylib"]
 
 [profile.release]
 codegen-units = 1
-strip = true
+strip = false
 lto = true
 panic = "abort"
-opt-level = "s"
+opt-level = "z"

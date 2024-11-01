@@ -1,7 +1,8 @@
 import json
 import subprocess
 
-contract_address = "0x4e5b65fb12d4165e22f5861d97a33ba45c006114"
+# contract_address = "0x4e5b65fb12d4165e22f5861d97a33ba45c006114"
+contract_address = "0xb7fc0e52ec06f125f3afeba199248c79f71c2e3a"
 private_key = "0xdc04c5399f82306ec4b4d654a342f40e2e0620fe39950d967e1e574b32d4dd36"
 
 with open('merkle_proof_test_data.json', 'r') as f:
