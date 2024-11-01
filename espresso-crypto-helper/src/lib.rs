@@ -12,16 +12,17 @@ pub mod v0_3;
 
 use std::num::NonZeroU32;
 
+use alloy_primitives::{address, Address};
+use alloy_sol_types::SolValue;
 use ark_ff::PrimeField;
 use ark_serialize::{CanonicalDeserialize, CanonicalSerialize};
-use committable::{Commitment, Committable};
+use committable::Commitment;
 use ethers_core::types::U256;
 use full_payload::{NsProof, NsTable};
 use getrandom::{register_custom_getrandom, Error};
 use hotshot_types::{VidCommitment, VidCommon};
 use jf_crhf::CRHF;
 use jf_merkle_tree::{
-    hasher::{HasherDigest, HasherNode},
     prelude::{MerkleNode, MerkleProof, MerkleTreeScheme, Sha3Node},
     MerkleCommitment,
 };
@@ -31,7 +32,7 @@ use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use tagged_base64::TaggedBase64;
 
-use stylus_sdk::prelude::*;
+use stylus_sdk::{call::RawCall, function_selector, prelude::*};
 use v0_3::BlockMerkleCommitment;
 
 const MY_CUSTOM_ERROR_CODE: u32 = Error::CUSTOM_START + 42;
@@ -41,6 +42,8 @@ pub fn always_fail(_buf: &mut [u8]) -> Result<(), Error> {
 }
 
 register_custom_getrandom!(always_fail);
+
+const SOFT_FLOAT_CONTRACT_ADDRESS: Address = address!("75745a1124de342716a94cbdfdea12f4f93d1b80");
 
 #[storage]
 #[entrypoint]
@@ -80,6 +83,176 @@ impl Entry {
             height,
             &header_commitment,
         );
+    }
+}
+
+impl Entry {
+    #[no_mangle]
+    #[inline(never)]
+    #[allow(non_snake_case)]
+    fn wavm__f64_convert_i64_u(a: u64) -> u64 {
+        let selector = function_selector!("wavm__f64_convert_i64_u");
+        let mut calldata = selector.to_vec();
+        calldata.extend(a.abi_encode());
+        let result = RawCall::new()
+            .call(SOFT_FLOAT_CONTRACT_ADDRESS, &calldata)
+            .unwrap();
+        let r: u64 = SolValue::abi_decode(&result, true).unwrap();
+        r
+    }
+
+    #[no_mangle]
+    #[inline(never)]
+    #[allow(non_snake_case)]
+    fn wavm__f64_eq(a: u64, b: u64) -> u32 {
+        let selector = function_selector!("wavm__f64_eq");
+        let mut calldata = selector.to_vec();
+        calldata.extend(vec![a, b].abi_encode_params());
+        let result = RawCall::new()
+            .call(SOFT_FLOAT_CONTRACT_ADDRESS, &calldata)
+            .unwrap();
+        let r: u32 = SolValue::abi_decode(&result, true).unwrap();
+        r
+    }
+
+    #[no_mangle]
+    #[inline(never)]
+    #[allow(non_snake_case)]
+    fn wavm__f64_div(a: u64, b: u64) -> u64 {
+        let selector = function_selector!("wavm__f64_div");
+        let mut calldata = selector.to_vec();
+        calldata.extend(vec![a, b].abi_encode_params());
+        let result = RawCall::new()
+            .call(SOFT_FLOAT_CONTRACT_ADDRESS, &calldata)
+            .unwrap();
+        let r: u64 = SolValue::abi_decode(&result, true).unwrap();
+        r
+    }
+
+    #[no_mangle]
+    #[inline(never)]
+    #[allow(non_snake_case)]
+    fn wavm__f64_mul(a: u64, b: u64) -> u64 {
+        let selector = function_selector!("wavm__f64_mul");
+        let mut calldata = selector.to_vec();
+        calldata.extend(vec![a, b].abi_encode_params());
+        let result = RawCall::new()
+            .call(SOFT_FLOAT_CONTRACT_ADDRESS, &calldata)
+            .unwrap();
+        let r: u64 = SolValue::abi_decode(&result, true).unwrap();
+        r
+    }
+
+    #[no_mangle]
+    #[inline(never)]
+    #[allow(non_snake_case)]
+    fn wavm__f64_abs(a: u64) -> u64 {
+        let selector = function_selector!("wavm__f64_abs");
+        let mut calldata = selector.to_vec();
+        calldata.extend(a.abi_encode());
+        let result = RawCall::new()
+            .call(SOFT_FLOAT_CONTRACT_ADDRESS, &calldata)
+            .unwrap();
+        let r: u64 = SolValue::abi_decode(&result, true).unwrap();
+        r
+    }
+
+    #[no_mangle]
+    #[inline(never)]
+    #[allow(non_snake_case)]
+    fn wavm__f64_ne(a: u64, b: u64) -> u32 {
+        let selector = function_selector!("wavm__f64_ne");
+        let mut calldata = selector.to_vec();
+        calldata.extend(vec![a, b].abi_encode_params());
+        let result = RawCall::new()
+            .call(SOFT_FLOAT_CONTRACT_ADDRESS, &calldata)
+            .unwrap();
+        let r: u32 = SolValue::abi_decode(&result, true).unwrap();
+        r
+    }
+
+    #[no_mangle]
+    #[inline(never)]
+    #[allow(non_snake_case)]
+    fn wavm__f64_neg(a: u64) -> u64 {
+        let selector = function_selector!("wavm__f64_neg");
+        let mut calldata = selector.to_vec();
+        calldata.extend(a.abi_encode());
+        let result = RawCall::new()
+            .call(SOFT_FLOAT_CONTRACT_ADDRESS, &calldata)
+            .unwrap();
+        let r: u64 = SolValue::abi_decode(&result, true).unwrap();
+        r
+    }
+
+    #[no_mangle]
+    #[inline(never)]
+    #[allow(non_snake_case)]
+    fn wavm__f64_lt(a: u64, b: u64) -> u32 {
+        let selector = function_selector!("wavm__f64_lt");
+        let mut calldata = selector.to_vec();
+        calldata.extend(vec![a, b].abi_encode_params());
+        let result = RawCall::new()
+            .call(SOFT_FLOAT_CONTRACT_ADDRESS, &calldata)
+            .unwrap();
+        let r: u32 = SolValue::abi_decode(&result, true).unwrap();
+        r
+    }
+
+    #[no_mangle]
+    #[inline(never)]
+    #[allow(non_snake_case)]
+    fn wavm__f64_ge(a: u64, b: u64) -> u32 {
+        let selector = function_selector!("wavm__f64_ge");
+        let mut calldata = selector.to_vec();
+        calldata.extend(vec![a, b].abi_encode_params());
+        let result = RawCall::new()
+            .call(SOFT_FLOAT_CONTRACT_ADDRESS, &calldata)
+            .unwrap();
+        let r: u32 = SolValue::abi_decode(&result, true).unwrap();
+        r
+    }
+
+    #[no_mangle]
+    #[inline(never)]
+    #[allow(non_snake_case)]
+    fn wavm__f64_gt(a: u64, b: u64) -> u32 {
+        let selector = function_selector!("wavm__f64_gt");
+        let mut calldata = selector.to_vec();
+        calldata.extend(vec![a, b].abi_encode_params());
+        let result = RawCall::new()
+            .call(SOFT_FLOAT_CONTRACT_ADDRESS, &calldata)
+            .unwrap();
+        let r: u32 = SolValue::abi_decode(&result, true).unwrap();
+        r
+    }
+
+    #[no_mangle]
+    #[inline(never)]
+    #[allow(non_snake_case)]
+    fn wavm__i64_trunc_f64_u(a: u64) -> u64 {
+        let selector = function_selector!("wavm__i64_trunc_f64_u");
+        let mut calldata = selector.to_vec();
+        calldata.extend(a.abi_encode());
+        let result = RawCall::new()
+            .call(SOFT_FLOAT_CONTRACT_ADDRESS, &calldata)
+            .unwrap();
+        let r: u64 = SolValue::abi_decode(&result, true).unwrap();
+        r
+    }
+
+    #[no_mangle]
+    #[inline(never)]
+    #[allow(non_snake_case)]
+    fn wavm__f64_promote_f32(a: u32) -> u64 {
+        let selector = function_selector!("wavm__f64_promote_f32");
+        let mut calldata = selector.to_vec();
+        calldata.extend(a.abi_encode());
+        let result = RawCall::new()
+            .call(SOFT_FLOAT_CONTRACT_ADDRESS, &calldata)
+            .unwrap();
+        let r: u64 = SolValue::abi_decode(&result, true).unwrap();
+        r
     }
 }
 
@@ -239,10 +412,6 @@ mod tests {
         println!("height: {:?}", test_data.header.height());
         let result = verify_merkle_proof_helper(
             &proof,
-            // &[
-            //     134, 10, 54, 65, 245, 221, 143, 230, 41, 162, 225, 72, 30, 37, 73, 66, 213, 54, 26,
-            //     216, 43, 194, 58, 247, 139, 81, 127, 146, 107, 41, 40, 127,
-            // ],
             test_data.block_merkle_root.to_string().as_bytes(),
             &test_data.hotshot_commitment,
             test_data.header.height(),
